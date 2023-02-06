@@ -50,15 +50,15 @@ class LinkedList {
   /** pop(): return & remove last item. */
 
   pop() {
-    let currentNode = this.head
+    let currentNode = this.head;
     while (currentNode.next !== this.tail) {
-      currentNode = currentNode.next
+      currentNode = currentNode.next;
     }
     const temp = this.tail;
     currentNode.next = null;
     this.tail = currentNode;
 
-    return temp
+    return temp;
   }
 
   /** shift(): return & remove first item. */
@@ -66,8 +66,9 @@ class LinkedList {
   shift() {
     const temp = this.head;
     this.head = this.head.next;
+    this.length--;
 
-    return temp
+    return temp;
   }
 
   /** getAt(idx): get val at idx. */
@@ -88,35 +89,71 @@ class LinkedList {
 
   setAt(idx, val) {
     let currentNode = this.getAt(idx);
-
     currentNode.val = val;
   }
 
   /** insertAt(idx, val): add node w/val before idx. */
 
   insertAt(idx, val) {
-    if (idx > this.length - 1 || idx < 0) throw new Error();
+    if (idx === 0) {
+      if (idx > this.length - 1 || idx < 0) throw new Error();
+      this.unshift(val);
 
-    let newNode = new Node(val);
-    let prevNode = this.getAt(idx - 1);
-    let tempNode = prevNode.next;
+    } else {
+      let newNode = new Node(val);
+      let prevNode = this.getAt(idx - 1);
+      let tempNode = prevNode.next;
 
-    prevNode.next = newNode;
-    newNode.next = tempNode;
+      prevNode.next = newNode;
+      newNode.next = tempNode;
 
-    if (idx === 0) this.head = newNode;
+      this.length++;
+    }
   }
 
   /** removeAt(idx): return & remove item at idx, */
 
   removeAt(idx) {
+    if (idx > this.length - 1 || idx < 0) throw new Error();
+
     let prevNode = this.getAt(idx - 1);
-    let tempNode = this.getAt(idx + 1);
+
+    if (idx === 0) {
+      const tempVal = this.head.val;
+      this.head = this.head.next;
+      this.length--;
+
+      return tempVal;
+    }
+
+    if (idx === this.length - 1) {
+      const tempVal = this.tail.val;
+      prevNode.next = null;
+      this.tail = prevNode;
+      this.length--;
+
+      return tempVal;
+    }
+
+    const tempVal = prevNode.next.val;
+    prevNode.next = prevNode.next.next;
+    this.length--;
+    return tempVal;
   }
 
   /** average(): return an average of all values in the list */
 
-  average() { }
+  average() {
+    let sum = 0;
+    let current = this.head;
+
+    while (current.next !== null) {
+      sum += current.val;
+      current = current.next;
+    }
+
+    return sum / this.length;
+  }
 }
 
 module.exports = LinkedList;
