@@ -28,7 +28,7 @@ class LinkedList {
     if (this.head === null) this.head = newNode;
     if (this.tail !== null) this.tail.next = newNode;
 
-    this.length ++;
+    this.length++;
 
     this.tail = newNode;
   }
@@ -42,7 +42,7 @@ class LinkedList {
       newNode.next = this.head;
     }
     if (this.tail === null) this.tail = newNode;
-    this.length ++;
+    this.length++;
 
     this.head = newNode;
   }
@@ -72,23 +72,51 @@ class LinkedList {
 
   /** getAt(idx): get val at idx. */
 
-  getAt(idx) {}
+  getAt(idx) {
+    if (idx > this.length - 1 || idx < 0) throw new Error();
+
+    let currentNode = this.head;
+
+    for (let i = 0; i < idx; i++) {
+      currentNode = currentNode.next;
+    }
+
+    return currentNode;
+  }
 
   /** setAt(idx, val): set val at idx to val */
 
-  setAt(idx, val) {}
+  setAt(idx, val) {
+    let currentNode = this.getAt(idx);
+
+    currentNode.val = val;
+  }
 
   /** insertAt(idx, val): add node w/val before idx. */
 
-  insertAt(idx, val) {}
+  insertAt(idx, val) {
+    if (idx > this.length - 1 || idx < 0) throw new Error();
+
+    let newNode = new Node(val);
+    let prevNode = this.getAt(idx - 1);
+    let tempNode = prevNode.next;
+
+    prevNode.next = newNode;
+    newNode.next = tempNode;
+
+    if (idx === 0) this.head = newNode;
+  }
 
   /** removeAt(idx): return & remove item at idx, */
 
-  removeAt(idx) {}
+  removeAt(idx) {
+    let prevNode = this.getAt(idx - 1);
+    let tempNode = this.getAt(idx + 1);
+  }
 
   /** average(): return an average of all values in the list */
 
-  average() {}
+  average() { }
 }
 
 module.exports = LinkedList;
