@@ -50,6 +50,8 @@ class LinkedList {
   /** pop(): return & remove last item. */
 
   pop() {
+    if (this.length === 0) throw new Error("list is empty!")
+
     let currentNode = this.head;
     while (currentNode.next !== this.tail) {
       currentNode = currentNode.next;
@@ -57,51 +59,50 @@ class LinkedList {
     const temp = this.tail;
     currentNode.next = null;
     this.tail = currentNode;
+    this.length--;
 
-    return temp;
+    return temp.val;
   }
 
   /** shift(): return & remove first item. */
 
   shift() {
+    if (this.length === 0) throw new Error("list is empty!")
+
     const temp = this.head;
     this.head = this.head.next;
     this.length--;
 
-    return temp;
+    if (this.length === 0) this.tail = null;
+
+    return temp.val;
   }
 
   /** getAt(idx): get val at idx. */
 
   getAt(idx) {
-    if (idx > this.length - 1 || idx < 0) throw new Error();
-
-    let currentNode = this.head;
-
-    for (let i = 0; i < idx; i++) {
-      currentNode = currentNode.next;
-    }
-
-    return currentNode;
+    return this.getByIdx(idx).val;
   }
 
   /** setAt(idx, val): set val at idx to val */
 
   setAt(idx, val) {
-    let currentNode = this.getAt(idx);
+    let currentNode = this.getByIdx(idx);
     currentNode.val = val;
   }
 
   /** insertAt(idx, val): add node w/val before idx. */
 
   insertAt(idx, val) {
-    if (idx === 0) {
-      if (idx > this.length - 1 || idx < 0) throw new Error();
-      this.unshift(val);
+    if (idx > this.length || idx < 0) throw new Error();
 
+    if (idx === 0) {
+      this.unshift(val);
+    } else if (idx === this.length) {
+      this.push(val);
     } else {
       let newNode = new Node(val);
-      let prevNode = this.getAt(idx - 1);
+      let prevNode = this.getByIdx(idx - 1);
       let tempNode = prevNode.next;
 
       prevNode.next = newNode;
@@ -114,9 +115,7 @@ class LinkedList {
   /** removeAt(idx): return & remove item at idx, */
 
   removeAt(idx) {
-    if (idx > this.length - 1 || idx < 0) throw new Error();
-
-    let prevNode = this.getAt(idx - 1);
+    // if (idx > this.length - 1 || idx < 0) throw new Error();
 
     if (idx === 0) {
       const tempVal = this.head.val;
@@ -125,6 +124,8 @@ class LinkedList {
 
       return tempVal;
     }
+
+    let prevNode = this.getByIdx(idx - 1);
 
     if (idx === this.length - 1) {
       const tempVal = this.tail.val;
@@ -144,15 +145,29 @@ class LinkedList {
   /** average(): return an average of all values in the list */
 
   average() {
+    if (this.length === 0) return 0;
+
     let sum = 0;
     let current = this.head;
 
-    while (current.next !== null) {
+    while (current !== null) {
       sum += current.val;
       current = current.next;
     }
 
     return sum / this.length;
+  }
+
+  getByIdx(idx) {
+    if (idx > this.length - 1 || idx < 0) throw new Error("invalid index!");
+
+    let currentNode = this.head;
+
+    for (let i = 0; i < idx; i++) {
+      currentNode = currentNode.next;
+    }
+
+    return currentNode
   }
 }
 
