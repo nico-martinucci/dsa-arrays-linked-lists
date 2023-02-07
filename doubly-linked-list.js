@@ -63,44 +63,99 @@ class DoublyLinkedList {
   /** pop(): remove last item & return its value */
 
   pop() {
-
+    return this.removeAt(this.length - 1);
   }
 
   /** shift(): remove first item & return its value */
 
   shift() {
-
+    return this.removeAt(0);
   }
 
   /** getAt(idx): get val at idx.*/
 
   getAt(idx) {
-    return this.getByIdx(idx).val;
+    return this._get(idx).val;
   }
 
   /** setAt(idx, val): set val at idx to val */
 
   setAt(idx, val) {
-    let currentNode = this.getByIdx(idx);
+    let currentNode = this._get(idx);
     currentNode.val = val;
   }
 
   /** insertAt(idx, val): add node w/val before idx. */
 
   insertAt(idx, val) {
+    if (idx > this.length || idx < 0) throw new Error();
 
+    if (idx === 0) {
+      this.unshift(val);
+    } else if (idx === this.length) {
+      this.push(val);
+    } else {
+      let newNode = new Node(val);
+      let prevNode = this._get(idx - 1);
+      let tempNode = prevNode.next;
+
+      prevNode.next = newNode;
+      newNode.prev = prevNode;
+      newNode.next = tempNode;
+      tempNode.prev = newNode;
+
+      this.length++;
+    }
   }
 
   /** removeAt(idx): return & remove item at idx, */
 
   removeAt(idx) {
+    if (idx === 0) {
+      const tempVal = this.head.val;
+      this.head = this.head.next;
+      this.length--;
+      if (this.length !== 0) this.head.prev = null;
+      if (this.length === 0) this.tail = null;
 
+      return tempVal;
+    }
+
+    let currentNode = this._get(idx);
+
+    if (idx === this.length - 1) {
+      const tempVal = this.tail.val;
+      currentNode.prev.next = null;
+      this.tail = currentNode.prev;
+      this.length--;
+
+      return tempVal;
+    }
+
+    const tempVal = currentNode.val;
+    currentNode.prev.next = currentNode.next; // 10's "next" to 20
+    currentNode.next.prev = currentNode.prev; // 20's "prev" to 10
+    this.length--;
+
+    if (this.length === 0) this.tail = null;
+
+    return tempVal;
   }
 
   /** return average (mean) of list values. */
 
   average() {
+    if (this.length === 0) return 0;
 
+    let sum = 0;
+    let current = this.head;
+
+    while (current !== null) {
+      sum += current.val;
+      current = current.next;
+    }
+
+    return sum / this.length;
   }
 }
 
